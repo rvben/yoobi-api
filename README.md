@@ -96,7 +96,7 @@ All authenticated endpoints require a `Authorization: Bearer <API_KEY>` header.
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `API_KEY` | Yes | — | Bearer token for API authentication |
+| `API_KEY` | No | — | Secret you choose to protect the API (used as `Bearer` token). If unset, auth is disabled. |
 | `YOOBI_BASE_URL` | Yes | — | Yoobi instance URL (e.g. `https://yourcompany.yoobi.nl/`) |
 | `YOOBI_USERNAME` | Yes | — | Yoobi login username |
 | `YOOBI_PASSWORD` | Yes | — | Yoobi login password |

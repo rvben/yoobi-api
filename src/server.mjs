@@ -13,8 +13,8 @@ const IDLE_TIMEOUT_MS = parseInt(process.env.IDLE_TIMEOUT_MS || "300000", 10); /
 const HANDLER_TIMEOUT_MS = parseInt(process.env.HANDLER_TIMEOUT_MS || "120000", 10); // 2 min
 const READONLY = process.env.READONLY === "true";
 
-if (!API_KEY || !BASE_URL || !USERNAME || !PASSWORD) {
-	console.error("Missing required env vars: API_KEY, YOOBI_BASE_URL, YOOBI_USERNAME, YOOBI_PASSWORD");
+if (!BASE_URL || !USERNAME || !PASSWORD) {
+	console.error("Missing required env vars: YOOBI_BASE_URL, YOOBI_USERNAME, YOOBI_PASSWORD");
 	process.exit(1);
 }
 
@@ -154,7 +154,7 @@ const server = http.createServer(async (req, res) => {
 		return json(res, 404, { error: "Not found" });
 	}
 
-	if (route.auth) {
+	if (route.auth && API_KEY) {
 		const auth = req.headers.authorization || "";
 		const expected = `Bearer ${API_KEY}`;
 		const ok = auth.length === expected.length
@@ -188,6 +188,7 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, () => {
 	console.log(`Yoobi API listening on port ${PORT}`);
 	console.log(`Mode: ${READONLY ? "read-only" : "read-write"}`);
+	console.log(`Auth: ${API_KEY ? "enabled" : "disabled (no API_KEY set)"}`);
 	console.log(`Idle timeout: ${IDLE_TIMEOUT_MS / 1000}s`);
 	console.log(`API docs: http://localhost:${PORT}/api/docs`);
 });
