@@ -1,0 +1,13 @@
+{
+	"name": "yoobi-api",
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"start": "node src/server.mjs",
+		"dev": "node --watch src/server.mjs",
+		"cli": "node src/cli.mjs"
+	},
+	"dependencies": {
+		"playwright": "^1.52.0"
+	}
+}
