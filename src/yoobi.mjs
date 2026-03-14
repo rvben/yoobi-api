@@ -9,6 +9,26 @@ const MONTH_NAMES = [
 const IFRAME_TIMEOUT = 20000;
 const GRID_TIMEOUT = 15000;
 
+const CHROME_ARGS = [
+	"--disable-gpu",
+	"--disable-dev-shm-usage",
+	"--disable-software-rasterizer",
+	"--disable-extensions",
+	"--disable-background-networking",
+	"--disable-default-apps",
+	"--disable-sync",
+	"--metrics-recording-only",
+	"--no-first-run",
+	"--disable-background-timer-throttling",
+	"--disable-backgrounding-occluded-windows",
+	"--disable-component-update",
+	"--disable-hang-monitor",
+	"--disable-ipc-flooding-protection",
+	"--disable-renderer-backgrounding",
+];
+
+const BLOCKED_RESOURCE_TYPES = new Set(["image", "stylesheet", "font", "media"]);
+
 export class Yoobi {
 	constructor({ baseUrl, username, password }) {
 		this.baseUrl = baseUrl.replace(/\/$/, "") + "/";
@@ -19,10 +39,14 @@ export class Yoobi {
 	}
 
 	async launch() {
-		this.browser = await chromium.launch({ headless: true });
+		this.browser = await chromium.launch({ headless: true, args: CHROME_ARGS });
 		const context = await this.browser.newContext({ viewport: { width: 1280, height: 900 } });
 		this.page = await context.newPage();
 		this.page.setDefaultTimeout(30000);
+		await this.page.route("**/*", (route) => {
+			if (BLOCKED_RESOURCE_TYPES.has(route.request().resourceType())) return route.abort();
+			return route.continue();
+		});
 	}
 
 	async close() {
